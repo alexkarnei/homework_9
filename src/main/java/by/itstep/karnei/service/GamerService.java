@@ -2,15 +2,19 @@ package by.itstep.karnei.service;
 
 import by.itstep.karnei.model.Gamer;
 import by.itstep.karnei.model.Games;
+import by.itstep.karnei.model.RatingInGame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class GamerService {
 
     public static ArrayList<Gamer> gamers = new ArrayList<>();
-    public static Games[] games = Games.values();
-    public static int ranking;
+    private static Games[] games = Games.values();
+    public static HashMap<Gamer,RatingInGame> ratingInGame =new HashMap<>();
+    public static int rating;
+    public static boolean isWin;
 
     public static ArrayList<Gamer> systemGamerCheck(ArrayList<Gamer> gamers) {
         Gamer gamer = new Gamer(getNikName(), getGame());
@@ -18,7 +22,7 @@ public class GamerService {
         return gamers;
     }
 
-    public static void checkInGamer(Gamer gamer, ArrayList<Gamer> gamers) {
+    private static void checkInGamer(Gamer gamer, ArrayList<Gamer> gamers) {
         if (checkNik(gamer, gamers))
             gamers.add(gamer);
     }
@@ -33,30 +37,30 @@ public class GamerService {
         return true;
     }
 
-    public static String getNikName() {
+    private static String getNikName() {
         System.out.println("Input nik : ");
         Scanner sc = new Scanner(System.in);
         String gameName = sc.next();
         return gameName;
     }
 
-    public static ArrayList<Games> getGame() {
+    private static ArrayList<Games> getGame() {
 
-        ArrayList<Games> gemerGames = new ArrayList<>();
+        ArrayList<Games> gamerGames = new ArrayList<>();
         for (int i = 0; i < games.length; i++) {
             Games element = games[i];
             System.out.println(" Play in " + games[i] + " 1 = Yes / 0 = No ?");
             Scanner scanner = new Scanner(System.in);
             String flag = scanner.next();
             if (flag.equals("1")) {
-                gemerGames.add(element);
+                gamerGames.add(element);
             }
         }
-        gemerGames.trimToSize();
-        return gemerGames;
+        gamerGames.trimToSize();
+        return gamerGames;
     }
 
-    public static ArrayList<Games> gameEveryOnePlay() {
+    public static ArrayList<Games> gameEveryonePlay() {
         ArrayList<Games> gamesAllGamer = new ArrayList<>();
         for (int i = 0; i < games.length; i++) {
             int count = 0;
@@ -71,5 +75,15 @@ public class GamerService {
             }
         }
         return gamesAllGamer;
+    }
+
+
+    public static void printGame(ArrayList<Games> gameAllGamer) {
+        if (gameAllGamer.isEmpty()) {
+            System.out.println("No games played by everyone.");
+
+        } else {
+            System.out.println("Games that all gamers play : " + gameAllGamer);
+        }
     }
 }
