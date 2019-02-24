@@ -9,13 +9,15 @@ import java.util.Scanner;
 public class GamerService {
 
     public static ArrayList<Gamer> gamers = new ArrayList<>();
-    private static Games[] games = Games.values();
+    public static Games[] games = Games.values();
+    public static int ranking;
 
     public static ArrayList<Gamer> systemGamerCheck(ArrayList<Gamer> gamers) {
         Gamer gamer = new Gamer(getNikName(), getGame());
         checkInGamer(gamer, gamers);
         return gamers;
     }
+
     public static void checkInGamer(Gamer gamer, ArrayList<Gamer> gamers) {
         if (checkNik(gamer, gamers))
             gamers.add(gamer);
@@ -70,5 +72,4 @@ public class GamerService {
         }
         return gamesAllGamer;
     }
-
 }
