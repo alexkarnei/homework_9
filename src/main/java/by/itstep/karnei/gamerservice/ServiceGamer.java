@@ -14,19 +14,23 @@ public class ServiceGamer implements GamerService {
     public void checkInGamer(Gamer player) throws UserAlreadyExistException {
         String nick = player.getNick();
         Set<Games> game = player.getGame();
-        Games games = player.getGames();
         if (players.get(nick) != null) {
             throw new UserAlreadyExistException();
         }
         players.put(nick, game);
-        Map<Games, Integer> keyGame = rating.get(games);
-        for (Games oneGame : game) {
-            games = oneGame;
+        int ratingInGame = player.getRating();
+        addInMapGamerWithRatingInGame(player, nick, game, ratingInGame);
+    }
+
+
+    private void addInMapGamerWithRatingInGame(Gamer player, String nick, Set<Games> game, int ratingInGame) {
+        Map<Games, Integer> keyGame = rating.get(player.getNick());
+        for (Games games : game) {
             if (keyGame == null) {
                 keyGame = new HashMap<>();
-                keyGame.put(games, player.getRating());
+                keyGame.put(games, ratingInGame);
             } else {
-                keyGame.put(games, player.getRating());
+                keyGame.put(games, ratingInGame);
             }
         }
         rating.put(nick, keyGame);
@@ -42,22 +46,42 @@ public class ServiceGamer implements GamerService {
 
     @Override
     public void addRatingInGame(Gamer gamer, Games game) throws UserNotFoundException {
-        if (gamer.getNick() == null) {
+        if (rating.get(gamer.getNick()) == null) {
             throw new UserNotFoundException();
-        } else if (gamer.getGames()==null) {
-            gamer.setRating(gamer.getRating() + 1);
+        } else if (rating.get(gamer.getNick()).get(game) != null) {
+            int ratingInGame = rating.get(gamer.getNick()).get(game) + 1;
+            Set<Games> gameGamer = gamer.getGame();
+            addMapAfterAddRatingGamerInGame(gamer, game, ratingInGame, gameGamer);
+            gamer.setRating(ratingInGame);
         } else throw new UserNotFoundException();
+    }
 
+    private void addMapAfterAddRatingGamerInGame(Gamer gamer, Games game, int ratingInGame, Set<Games> gameGamer) {
+        Map<Games, Integer> keyGame = rating.get(gamer.getNick());
+        for (Games games : gameGamer) {
+            if (game.equals(games)) {
+                if (keyGame == null) {
+                    keyGame = new HashMap<>();
+                    keyGame.put(game, ratingInGame);
+                } else {
+                    keyGame.put(game, ratingInGame);
+                }
+            }
+        }
+        rating.put(gamer.getNick(), keyGame);
     }
 
     public int returnRatingInGame(String nick, Games game) throws UserNotFoundException {
         if (rating.get(nick) == null || rating.get(nick).get(game) == null) {
             throw new UserNotFoundException();
         }
-        else{
-
-        }
         return rating.get(nick).get(game);
+    }
+
+    @Override
+    public Set<Games> returnSetGamesWhichPlayAllGamers() {
+        Set<Games> gamesAllGamers = new HashSet<>();
+        return gamesAllGamers;
     }
 }
 

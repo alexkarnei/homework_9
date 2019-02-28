@@ -5,10 +5,7 @@ import by.itstep.karnei.gamerservice.Exception.UserNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ServiceGamerTest {
@@ -30,7 +27,6 @@ public class ServiceGamerTest {
         ServiceGamer serviceGamer1 = new ServiceGamer();
 
         serviceGamer1.checkInGamer(gamer1);
-
     }
 
     @Test(expected = UserAlreadyExistException.class)
@@ -56,25 +52,75 @@ public class ServiceGamerTest {
     }
 
     @Test
-    public void addRatingInGame() throws UserNotFoundException, UserAlreadyExistException {
+    public void addRatingInGamTest() throws UserNotFoundException, UserAlreadyExistException {
         Set<Games> list = new HashSet<>();
 
         list.add(Games.WORLD_OF_TANKS);
+        list.add(Games.FOOTBALL_MANAGER);
 
         Gamer gamer = new Gamer("Vova", list, 0);
 
         ServiceGamer serviceGamer = new ServiceGamer();
 
-        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
-
-        Assert.assertEquals(1, gamer.getRating());
-
-        System.out.println(gamer.getRating());
+        serviceGamer.checkInGamer(gamer);
 
         serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
 
-        Assert.assertEquals(2,gamer.getRating());
-        System.out.println(gamer.getRating());
+        Assert.assertEquals(4, gamer.getRating());
+
+        serviceGamer.addRatingInGame(gamer, Games.FOOTBALL_MANAGER);
+        serviceGamer.addRatingInGame(gamer, Games.FOOTBALL_MANAGER);
+
+        Assert.assertEquals(2, gamer.getRating());
+    }
+
+    @Test(expected = UserAlreadyExistException.class)
+    public void addRatingSecondInGameTest() throws UserNotFoundException, UserAlreadyExistException {
+        Set<Games> list = new HashSet<>();
+
+        list.add(Games.WORLD_OF_TANKS);
+        list.add(Games.FOOTBALL_MANAGER);
+
+        Gamer gamer = new Gamer("Vova", list, 0);
+        Gamer gamer1 = new Gamer("Vova", list, 0);
+
+        ServiceGamer serviceGamer = new ServiceGamer();
+
+        serviceGamer.checkInGamer(gamer);
+        serviceGamer.checkInGamer(gamer1);
+
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+
+        Assert.assertEquals(4, gamer.getRating());
+
+        serviceGamer.addRatingInGame(gamer, Games.FOOTBALL_MANAGER);
+        serviceGamer.addRatingInGame(gamer, Games.FOOTBALL_MANAGER);
+
+        Assert.assertEquals(2, gamer.getRating());
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void addRatingNotFoundUserInGameTest() throws UserNotFoundException, UserAlreadyExistException {
+        Set<Games> list = new HashSet<>();
+
+        list.add(Games.WORLD_OF_TANKS);
+        list.add(Games.FOOTBALL_MANAGER);
+
+        Gamer gamer = new Gamer("Vova", list, 0);
+        Gamer gamer1 = new Gamer("Alex", list, 0);
+
+        ServiceGamer serviceGamer = new ServiceGamer();
+
+        serviceGamer.checkInGamer(gamer);
+
+
+        serviceGamer.addRatingInGame(gamer1, Games.WORLD_OF_TANKS);
     }
 
 
@@ -91,9 +137,57 @@ public class ServiceGamerTest {
 
         serviceGamer.checkInGamer(gamer);
 
-        serviceGamer.addRatingInGame(gamer,Games.WORLD_OF_TANKS);
-        System.out.println(gamer.toString());
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.FOOTBALL_MANAGER);
 
-        System.out.println(serviceGamer.returnRatingInGame("Alex", Games.WORLD_OF_TANKS));
+        Assert.assertEquals(2, serviceGamer.returnRatingInGame("Alex", Games.WORLD_OF_TANKS));
+        Assert.assertEquals(1, serviceGamer.returnRatingInGame("Alex", Games.FOOTBALL_MANAGER));
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void returnRatingInGameNotFoundUser() throws UserNotFoundException, UserAlreadyExistException {
+        Set<Games> list = new HashSet<>();
+
+        list.add(Games.WORLD_OF_TANKS);
+        list.add(Games.WORLD_OF_WAR_CRAFT);
+        list.add(Games.FOOTBALL_MANAGER);
+
+        Gamer gamer = new Gamer("Alex", list, 0);
+        Gamer gamer1 = new Gamer("Julia", list, 0);
+        Gamer gamer3 = new Gamer("Jon", list, 0);
+        ServiceGamer serviceGamer = new ServiceGamer();
+
+        serviceGamer.checkInGamer(gamer);
+
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.WORLD_OF_TANKS);
+        serviceGamer.addRatingInGame(gamer, Games.FOOTBALL_MANAGER);
+
+        Assert.assertEquals(2, serviceGamer.returnRatingInGame("Alex", Games.WORLD_OF_TANKS));
+        Assert.assertEquals(1, serviceGamer.returnRatingInGame("Alex", Games.FOOTBALL_MANAGER));
+
+        Assert.assertEquals(2, serviceGamer.returnRatingInGame("Jon", Games.WORLD_OF_TANKS));
+        Assert.assertEquals(2, serviceGamer.returnRatingInGame("Julia", Games.WORLD_OF_TANKS));
+    }
+
+    @Test(expected = UserAlreadyExistException.class)
+    public void returnRatingInGameDuplicateUser() throws UserNotFoundException, UserAlreadyExistException {
+        Set<Games> list = new HashSet<>();
+
+        list.add(Games.WORLD_OF_TANKS);
+        list.add(Games.WORLD_OF_WAR_CRAFT);
+        list.add(Games.FOOTBALL_MANAGER);
+
+        Gamer gamer = new Gamer("Alex", list, 0);
+        Gamer gamer1 = new Gamer("Alex", list, 0);
+
+        ServiceGamer serviceGamer = new ServiceGamer();
+
+        serviceGamer.checkInGamer(gamer);
+        serviceGamer.checkInGamer(gamer1);
+
+        Assert.assertEquals(0, serviceGamer.returnRatingInGame("Alex", Games.WORLD_OF_TANKS));
+        Assert.assertEquals(0, serviceGamer.returnRatingInGame("Alex", Games.FOOTBALL_MANAGER));
     }
 }
