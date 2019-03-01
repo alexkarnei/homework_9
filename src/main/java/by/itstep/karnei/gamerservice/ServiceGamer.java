@@ -1,14 +1,15 @@
 package by.itstep.karnei.gamerservice;
 
-import by.itstep.karnei.gamerservice.Exception.UserAlreadyExistException;
-import by.itstep.karnei.gamerservice.Exception.UserNotFoundException;
+import by.itstep.karnei.gamerservice.exception.UserAlreadyExistException;
+import by.itstep.karnei.gamerservice.exception.UserNotFoundException;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ServiceGamer implements GamerService {
 
-    private Map<String, Set<Games>> players = new HashMap<>();
-    private Map<String, Map<Games, Integer>> rating = new HashMap<>();
+    private HashMap<String, Set<Games>> players = new HashMap<>();
+    private HashMap<String, Map<Games, Integer>> rating = new HashMap<>();
 
     @Override
     public void checkInGamer(Gamer player) throws UserAlreadyExistException {
@@ -80,8 +81,62 @@ public class ServiceGamer implements GamerService {
 
     @Override
     public Set<Games> returnSetGamesWhichPlayAllGamers() {
-        Set<Games> gamesAllGamers = new HashSet<>();
-        return gamesAllGamers;
+        Set<Games> setGames = new HashSet<>();
+        Games[] games = Games.values();
+
+        Collection<Set<Games>> gamesAllGamers = players.values();
+        for (Games game : games) {
+            int count = 0;
+            for (Set<Games> set : gamesAllGamers) {
+                if (set.contains(game)) {
+                    count++;
+                }
+            }
+            if (count == gamesAllGamers.size()) {
+                setGames.add(game);
+            }
+        }
+        return setGames;
+    }
+
+    @Override
+    public void getBestGamersInGame(Games game) {
+        Map<String, Integer> ratingAll = new HashMap<>();
+        for (Map.Entry<String, Map<Games, Integer>> mapEntry : rating.entrySet()) {
+            String nick = mapEntry.getKey();
+            int ratingInGame = mapEntry.getValue().get(game);
+            ratingAll.put(nick, ratingInGame);
+        }
+        System.out.println(" 10 best players in game " + game+ ":");
+        final int[] count = {0};
+        ratingAll.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEach(getEntryConsumer(count));
+    }
+
+    private Consumer<Map.Entry<String, Integer>> getEntryConsumer(int[] count) {
+        return s -> {
+            if (count[0] < 10)
+                System.out.println(s);
+            count[0]++;
+        };
+    }
+
+    @Override
+    public void getBestGamersInAllGame() {
+        Map<String, Integer> ratingAll = new HashMap<>();
+        for (Map.Entry<String, Map<Games, Integer>> mapEntry : rating.entrySet()) {
+
+            String nick = mapEntry.getKey();
+            int ratingInGame = mapEntry.getValue().values().stream().mapToInt(value -> value).sum();
+            ratingAll.put(nick, ratingInGame);
+        }
+        System.out.println(" 10 best players in all games :");
+        final int[] count = {0};
+        ratingAll.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEach(getEntryConsumer(count));
+
     }
 }
 

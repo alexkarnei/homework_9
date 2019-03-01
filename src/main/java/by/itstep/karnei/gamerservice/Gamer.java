@@ -27,10 +27,10 @@ public class Gamer {
         this.game = game;
     }
 
-    public Gamer(String nick, Set<Games> game, int rating) {
+    public Gamer(String nick, Set<Games> game, int startRatingForOneGames) {
         this.nick = nick;
         this.game = game;
-        this.rating = rating;
+        this.rating = startRatingForOneGames;
     }
 
     public String getNick() {

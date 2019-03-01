@@ -1,7 +1,7 @@
 package by.itstep.karnei.gamerservice;
 
-import by.itstep.karnei.gamerservice.Exception.UserAlreadyExistException;
-import by.itstep.karnei.gamerservice.Exception.UserNotFoundException;
+import by.itstep.karnei.gamerservice.exception.UserAlreadyExistException;
+import by.itstep.karnei.gamerservice.exception.UserNotFoundException;
 
 import java.util.Set;
 
@@ -14,4 +14,9 @@ public interface GamerService {
     int returnRatingInGame(String nick, Games game) throws UserNotFoundException;
 
     Set<Games> returnSetGamesWhichPlayAllGamers();
+
+    void getBestGamersInGame(Games game);
+
+    void getBestGamersInAllGame();
+
 }
