@@ -110,7 +110,6 @@ public class ServiceGamerTest {
 
         serviceGamer.checkInGamer(new Gamer("Vova", list, 0));
 
-
         serviceGamer.addRatingInGame(new Gamer("Alex", list, 0), Games.WORLD_OF_TANKS);
     }
 
@@ -300,8 +299,38 @@ public class ServiceGamerTest {
         serviceGamer.checkInGamer(new Gamer("Gamer_198", list, 24));
         serviceGamer.checkInGamer(new Gamer("Vasya_2005", list, 14));
 
+        Assert.assertEquals(124, victor.getRating() * list.size());
+        serviceGamer.getBestGamersInAllGame();
+    }
 
-        Assert.assertEquals(124,victor.getRating()*list.size());
+    @Test(expected = UserAlreadyExistException.class)
+    public void getBestSecondPlayersInAllGamesTest() throws UserAlreadyExistException, UserNotFoundException {
+
+        Set<Games> list = new HashSet<>
+                (Arrays.asList(Games.WORLD_OF_TANKS,
+                        Games.FOOTBALL_MANAGER));
+
+        ServiceGamer serviceGamer = new ServiceGamer();
+
+        serviceGamer.checkInGamer(new Gamer("Alex", list, 2));
+        serviceGamer.checkInGamer(new Gamer("Bob", list, 10));
+        serviceGamer.checkInGamer(new Gamer("Juli", list, 8));
+        serviceGamer.checkInGamer(new Gamer("Julia", list, 9));
+        serviceGamer.checkInGamer(new Gamer("Bobby", list, 12));
+        serviceGamer.checkInGamer(new Gamer("John", list, 15));
+        Gamer victor = new Gamer("Victor", list, 62);
+        serviceGamer.checkInGamer(victor);
+        serviceGamer.checkInGamer(new Gamer("Gena", list, 4));
+        serviceGamer.checkInGamer(new Gamer("Vitaliy", list, 3));
+        serviceGamer.checkInGamer(new Gamer("Vova", list, 9));
+        serviceGamer.checkInGamer(new Gamer("Vanya", list, 8));
+        serviceGamer.checkInGamer(new Gamer("Gamer", list, 3));
+        serviceGamer.checkInGamer(new Gamer("Gamer_198", list, 24));
+        serviceGamer.checkInGamer(new Gamer("Vasya_2005", list, 14));
+        serviceGamer.checkInGamer(new Gamer("Alex", list, 2));
+
+
+        Assert.assertEquals(124, victor.getRating() * list.size());
         serviceGamer.getBestGamersInAllGame();
     }
 }

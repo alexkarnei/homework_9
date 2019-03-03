@@ -40,8 +40,8 @@ public class ServiceGamer implements GamerService {
     @Override
     public String toString() {
         return "ServiceGamer{" +
-                "players=" + players +
-                ", rating=" + rating +
+                "players=" + players +","+
+                "\n"+"rating=" + rating +
                 '}';
     }
 
@@ -83,7 +83,6 @@ public class ServiceGamer implements GamerService {
     public Set<Games> returnSetGamesWhichPlayAllGamers() {
         Set<Games> setGames = new HashSet<>();
         Games[] games = Games.values();
-
         Collection<Set<Games>> gamesAllGamers = players.values();
         for (Games game : games) {
             int count = 0;

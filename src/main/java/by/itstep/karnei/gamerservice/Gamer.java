@@ -61,9 +61,9 @@ public class Gamer {
     public String toString() {
         return "Gamer{" +
                 "nick='" + nick + '\'' +
-                ", games=" + games +
+//                ", games=" + games +
                 ", game=" + game +
-                ", rating=" + rating +
+               ", start rating in each game =" + rating +
                 '}';
     }
 }
