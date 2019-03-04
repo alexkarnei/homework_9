@@ -1,6 +1,7 @@
 package by.itstep.karnei.invoiceservice;
 
 import by.itstep.karnei.invoiceservice.exception.SupplierAndRecipientOneSTock;
+import by.itstep.karnei.invoiceservice.exception.ThisProductIsNotInStockException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -14,7 +15,7 @@ public class InvoiceService implements InvoiceInterface {
     private Map<Stock, Set<Product>> productMap = new ConcurrentHashMap<>();
 
     public Invoice workWithInvoice(Calendar date, Provider provider, Stock stock, List<Product> productList) throws SupplierAndRecipientOneSTock {
-      if (provider.getStock()==(stock)) {
+        if (provider.getStock() == (stock)) {
             throw new SupplierAndRecipientOneSTock();
         } else {
             externalProviders(provider);
@@ -81,6 +82,32 @@ public class InvoiceService implements InvoiceInterface {
     public Set<Product> returnAllProductsOnStock(Stock stock) {
         return productMap.get(stock);
     }
+
+    @Override
+    public String setForGoodInStock(String nameOfProduct) throws ThisProductIsNotInStockException {
+        Map<String, Map<Stock, String>> productInStock = new HashMap<>();
+        Set<Product> cash = new HashSet<>();
+        Map<Stock, String> stockQuantityUnit = new HashMap<>();
+        for (Map.Entry<Stock, Set<Product>> mapEntry : productMap.entrySet()) {
+            Stock stock = mapEntry.getKey();
+            Set<Product> productSet = mapEntry.getValue();
+            for (Product product : productSet) {
+                StringBuilder quantityUnit =new StringBuilder() ;
+                if (nameOfProduct.equals(product.getNameOfProduct())) {
+                  quantityUnit.append(product.getQuantity()).append(",").append(product.getUnit());
+                    stockQuantityUnit.put(stock, quantityUnit.toString());
+                    productInStock.put(product.getNameOfProduct(), stockQuantityUnit);
+                } else {
+                    cash.add(product);
+                    if (cash.size() == productSet.size()) {
+                        throw new ThisProductIsNotInStockException();
+                    }
+                }
+            }
+        }
+        return productInStock.toString();
+    }
+
 
 
     public String printInvoice(Invoice invoice) {
