@@ -1,5 +1,7 @@
 package by.itstep.karnei.invoiceservice;
 
+import by.itstep.karnei.invoiceservice.exception.SupplierAndRecipientOneSTock;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,33 +13,38 @@ public class InvoiceService implements InvoiceInterface {
     private Set<Stock> stockSet = new HashSet<>(Arrays.asList(Stock.values()));
     private Map<Stock, Set<Product>> productMap = new ConcurrentHashMap<>();
 
-    public Invoice incomingInvoice(Calendar date, Provider provider, Stock stock, List<Product> productList) {
-        externalProviders(provider);
-        addProductAtStock(stock, productList);
-        return new Invoice(date, provider, stock, productList);
-    }
-
-    public Invoice outgoingInvoice(Calendar date, Provider provider, Stock stock, List<Product> productList) {
-        removeProductAtStock(provider, productList);
+    public Invoice workWithInvoice(Calendar date, Provider provider, Stock stock, List<Product> productList) throws SupplierAndRecipientOneSTock {
+      if (provider.getStock()==(stock)) {
+            throw new SupplierAndRecipientOneSTock();
+        } else {
+            externalProviders(provider);
+            if (stockSet.contains(provider.getStock())) {
+                removeProductAtStock(provider, productList);
+            }
+            addProductAtStock(stock, productList);
+        }
         return new Invoice(date, provider, stock, productList);
     }
 
     private void removeProductAtStock(Provider provider, List<Product> productList) {
         if (stockSet.contains(provider.getStock()) && productMap.get(provider.getStock()) != null) {
             Set<Product> products = productMap.get(provider.getStock());
-            products.forEach(product -> {
+            Set<Product> notNullProduct = new HashSet<>();
+            Set<Product> missingElementSet = new HashSet<>();
+            for (Product product : products) {
                 for (Product product1 : productList) {
                     if (product.equals(product1) && (product.getQuantity() >= product1.getQuantity())) {
                         product.setQuantity(product.getQuantity() - product1.getQuantity());
                         product.setSum(product.getQuantity() * product.getPrice());
-                        products.add(product);
-                    } else {
-                        products.add(product);
+                        if (product.getQuantity() != 0) {
+                            notNullProduct.add(product);
+                        } else productSet.add(product);
                     }
                 }
-            });
-            productMap.put(provider.getStock(), products);
+            }
+            productMap.put(provider.getStock(), notNullProduct);
         }
+        productSet.clear();
     }
 
     private void addProductAtStock(Stock stock, List<Product> productList) {
@@ -71,12 +78,9 @@ public class InvoiceService implements InvoiceInterface {
     }
 
 
-    public String returnAllProductsOnStock(Stock stock) {
-        StringBuilder sb = new StringBuilder();
-        productMap.get(stock).forEach(product -> sb.append(product.getNameOfProduct()).append(","));
-        return sb.toString();
+    public Set<Product> returnAllProductsOnStock(Stock stock) {
+        return productMap.get(stock);
     }
-
 
 
     public String printInvoice(Invoice invoice) {

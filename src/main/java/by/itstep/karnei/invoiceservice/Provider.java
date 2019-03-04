@@ -1,6 +1,7 @@
 package by.itstep.karnei.invoiceservice;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Provider {
     private String nameProvider;
