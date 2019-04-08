@@ -81,10 +81,10 @@ public class Product {
                 ", Ед. изм.=" + unit +
                 ", Количество=" + quantity +
                 ", Цена=" + price +
-                ", Сумма=" + sum+"\n";
+                ", Сумма=" + sum + "\n";
     }
 
-    public String toPrint(){
+    public String toPrint() {
         return nameOfProduct;
     }
 }

@@ -5,7 +5,6 @@ import by.itstep.karnei.invoiceservice.exception.ThisProductIsNotInStockExceptio
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface InvoiceInterface {
@@ -18,7 +17,7 @@ public interface InvoiceInterface {
 
     Set<Product> returnAllProductsOnStock(Stock stock);
 
-  String/*Map<String, Map<Stock, Map<Double, String>>>*/ setForGoodInStock(String nameOfProduct) throws ThisProductIsNotInStockException;
+    String setForGoodInStock(String nameOfProduct) throws ThisProductIsNotInStockException;
 
 
 }

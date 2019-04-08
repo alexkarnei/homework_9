@@ -31,7 +31,6 @@ public class InvoiceService implements InvoiceInterface {
         if (stockSet.contains(provider.getStock()) && productMap.get(provider.getStock()) != null) {
             Set<Product> products = productMap.get(provider.getStock());
             Set<Product> notNullProduct = new HashSet<>();
-            Set<Product> missingElementSet = new HashSet<>();
             for (Product product : products) {
                 for (Product product1 : productList) {
                     if (product.equals(product1) && (product.getQuantity() >= product1.getQuantity())) {
@@ -92,9 +91,9 @@ public class InvoiceService implements InvoiceInterface {
             Stock stock = mapEntry.getKey();
             Set<Product> productSet = mapEntry.getValue();
             for (Product product : productSet) {
-                StringBuilder quantityUnit =new StringBuilder() ;
+                StringBuilder quantityUnit = new StringBuilder();
                 if (nameOfProduct.equals(product.getNameOfProduct())) {
-                  quantityUnit.append(product.getQuantity()).append(",").append(product.getUnit());
+                    quantityUnit.append(product.getQuantity()).append(",").append(product.getUnit());
                     stockQuantityUnit.put(stock, quantityUnit.toString());
                     productInStock.put(product.getNameOfProduct(), stockQuantityUnit);
                 } else {
@@ -107,7 +106,6 @@ public class InvoiceService implements InvoiceInterface {
         }
         return productInStock.toString();
     }
-
 
 
     public String printInvoice(Invoice invoice) {
