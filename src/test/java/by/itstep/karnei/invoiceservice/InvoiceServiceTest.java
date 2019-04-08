@@ -15,7 +15,6 @@ import static java.util.Calendar.*;
 
 public class InvoiceServiceTest {
 
-//    @Data Provider
     @Test
     public void workWithInvoiceTest() throws SupplierAndRecipientOneSTock {
 
@@ -162,10 +161,10 @@ public class InvoiceServiceTest {
                 new Product("Вода 1л", "бутылка", 5, 2.5),
                 new Product("Кока-кола 0,5л", "бутылка", 10, 3),
                 new Product("Пепси 0,5л", "бутылка", 9, 3)));
-       invoiceService.workWithInvoice(date3, provider3, Stock.STOCK_3_XXX, productList3);
+        invoiceService.workWithInvoice(date3, provider3, Stock.STOCK_3_XXX, productList3);
 
-        Assert.assertEquals(0,invoiceService.returnAllProductsOnStock(Stock.STOCK_1_XXX).size());
-        Assert.assertEquals(6,invoiceService.returnAllProductsOnStock(Stock.STOCK_2_XXX).size());
+        Assert.assertEquals(0, invoiceService.returnAllProductsOnStock(Stock.STOCK_1_XXX).size());
+        Assert.assertEquals(6, invoiceService.returnAllProductsOnStock(Stock.STOCK_2_XXX).size());
 
         System.out.println(invoiceService.returnAllProductsOnStock(Stock.STOCK_1_XXX));
         System.out.println(invoiceService.returnAllProductsOnStock(Stock.STOCK_2_XXX));
@@ -192,7 +191,7 @@ public class InvoiceServiceTest {
                 new Product("Окно", "штук", 5, 258.2),
                 new Product("Подоконник", "метр", 20, 3.2),
                 new Product("Отлив", "метр", 18, 4)));
-       invoiceService.workWithInvoice(date1, provider1, Stock.STOCK_2_XXX, productList1);
+        invoiceService.workWithInvoice(date1, provider1, Stock.STOCK_2_XXX, productList1);
 
         System.out.println(invoiceService.setForGoodInStock("Окно"));
     }
